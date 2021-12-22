@@ -1,9 +1,3 @@
-/*
-Student: Mahyar Tajeri
-Teacher: Richard Chu
-Date: October 21, 2019
-Description: Find a possible path from one point in a maze to another using recursion
- */
 //Imports
 import java.util.*;
 import java.io.*;
