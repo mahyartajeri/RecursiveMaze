@@ -2,7 +2,7 @@
 import java.util.*;
 import java.io.*;
 
-public class MahyarTajeriMazeAssignment {
+public class MazePathFinder {
     public static void main(String[] args) throws IOException{
         ArrayList<ArrayList<String>> maze = new ArrayList<ArrayList<String>>();
         //Main loop that runs the program
