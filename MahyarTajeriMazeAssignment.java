@@ -1,0 +1,132 @@
+/*
+Student: Mahyar Tajeri
+Teacher: Richard Chu
+Date: October 21, 2019
+Description: Find a possible path from one point in a maze to another using recursion
+ */
+//Imports
+import java.util.*;
+import java.io.*;
+
+public class MahyarTajeriMazeAssignment {
+    public static void main(String[] args) throws IOException{
+        ArrayList<ArrayList<String>> maze = new ArrayList<ArrayList<String>>();
+        //Main loop that runs the program
+        for(int i = 1; i <= 6; i++) {
+            //This method passes in the ArrayList and the string value of the number of the maze for the file path
+            readFile(maze, Integer.toString(i));
+            //Divider
+            System.out.println("___________________________\n___________________________\nMaze before solve:");
+            //Prints maze before solve and sets the return value to the coordinates of the starting position
+            int[] startPoint = printMaze(maze);
+            //Boolean used to determine if maze has a solution
+            Boolean possible = reachGoal(maze, startPoint[0], startPoint[1]);
+            //If not, tell the user
+            if(!possible){
+                System.out.println("\nThis maze has no solution.");
+            }
+            //Divider
+            System.out.println("___________________________\nMaze after solve:");
+            //Prints maze after solve
+            printMaze(maze);
+            clearMaze(maze);
+        }
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    public static void readFile(ArrayList<ArrayList<String>> maze, String mazeNum) throws IOException{
+        File file = new File("Maze" + mazeNum + ".txt");
+        Scanner reader = new Scanner(file);
+        while(reader.hasNext()){
+            String[] line = reader.nextLine().split("");
+            ArrayList<String> row = new ArrayList<String>();
+            for(String s : line){
+                row.add(s);
+            }
+            maze.add(row);
+        }
+        reader.close();
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    public static int[] printMaze(ArrayList<ArrayList<String>> maze){
+        //Cyan colour so path is clear
+        //Normal colour for other symbols
+        String cyan = "\u001B[36m";
+        String normal = "\033[0m";
+
+        //Array for storing the location of the starting position
+        int[] startPoint = new int[2];
+
+        //Loop used to print maze and find starting position
+        for(int i = 0; i < maze.size(); i++){
+            for(int j = 0; j < maze.get(i).size(); j++){
+                //The starting position is always labeled as an "S"
+                if(maze.get(i).get(j).equals("S")){
+                    startPoint[0] = i;
+                    startPoint[1] = j;
+                }
+                //Spacing so the columns become clearer
+                if(maze.get(i).get(j).equals("+")){
+                    System.out.print(cyan + maze.get(i).get(j) + "  " + normal);
+                }else {
+                    System.out.print(maze.get(i).get(j) + "  ");
+                }
+            }
+            //Line break for new row
+            System.out.println();
+        }
+        //Returns the array that has the coordinates in row, column form of the starting position
+        return startPoint;
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    public static boolean reachGoal(ArrayList<ArrayList<String>> maze, int row, int col){
+        //---BASE CASES---
+
+        //If the location is out of bounds, backtrack
+        if(row > maze.size()-1 || col > maze.get(0).size()-1 || row < 0 || col < 0){
+            return false;
+        }
+        //If the location is the goal, then the path is found and we just need to return true
+        if(maze.get(row).get(col).equals("G")){
+            return true;
+        }
+        //If the path is blocked/previously visited on the same journey, backtrack
+        if(maze.get(row).get(col).equals("#") || maze.get(row).get(col).equals("+")){
+            return false;
+        }
+        //Set this position to a possible path since the above conditions were not met
+        if(!maze.get(row).get(col).equals("S")) {
+            maze.get(row).set(col, "+");
+        }
+
+        //---DIRECTIONS---
+
+        //North
+        if(reachGoal(maze, row - 1, col)){
+            return true;
+        }
+        //South
+        if(reachGoal(maze, row + 1, col)){
+            return true;
+        }
+        //East
+        if(reachGoal(maze, row, col+1)){
+            return true;
+        }
+        //West
+        if(reachGoal(maze, row, col-1)){
+            return true;
+        }
+
+        //If none of these directions are valid, it has reached a dead end and thus it will start converting back to "."
+        if(!maze.get(row).get(col).equals("S")) {
+            maze.get(row).set(col, ".");
+        }
+        //No directions are valid so returns false (backtracks)
+        return false;
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    public static void clearMaze(ArrayList<ArrayList<String>> maze){
+        //empties the ArrayList for the next maze
+        maze.clear();
+    }
+}
